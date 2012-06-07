@@ -11,10 +11,11 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-
+@synthesize defaults;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     return YES;
 }
 							

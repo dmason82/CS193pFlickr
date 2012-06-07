@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SecondViewController : UIViewController
-
+@interface SecondViewController : UIViewController <UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic,retain) NSArray* recents;
+@property(nonatomic,retain) IBOutlet UITableView* table;
 @end

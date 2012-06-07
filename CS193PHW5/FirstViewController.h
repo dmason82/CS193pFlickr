@@ -1,4 +1,4 @@
-//
+///Users/bastardx/Dropbox/CS193PHW5/CS193PHW5/FirstViewController.m
 //  FirstViewController.h
 //  CS193PHW5
 //
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FirstViewController : UIViewController
-
+@interface FirstViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@property(nonatomic,retain) NSArray* placesArray;
 @end
