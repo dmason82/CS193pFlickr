@@ -27,7 +27,7 @@
 {
     [super viewWillAppear:animated];
     NSLog(@"%@",self.place);
-    [self.imageView setImage:[UIImage imageWithData:[FlickrFetcher imageDataForPhotoWithFlickrInfo:self.place format:FlickrFetcherPhotoFormatOriginal]]];
+    [self.imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[FlickrFetcher urlForPhoto:self.place format:FlickrPhotoFormatLarge]]]];
 }
 - (void)viewDidLoad
 {

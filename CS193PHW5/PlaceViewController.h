@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface PlaceViewController : UITableViewController <UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic,retain)NSString* place;
+@property(nonatomic,retain)NSDictionary* place;
 @property(nonatomic,retain)NSArray* pictures;
 @end

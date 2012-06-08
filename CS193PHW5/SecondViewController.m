@@ -21,7 +21,15 @@
 {
     [super viewWillAppear:animated];
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    self.recents = [defaults arrayForKey:@"recents"];
+    if ([[defaults arrayForKey:@"recents"] count] > 0) {
+        NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:FLICKR_PHOTO_ID ascending:NO];
+        NSArray* sort = [NSArray arrayWithObject:descriptor];
+        self.recents = [[[defaults arrayForKey:@"recents"] copy] sortedArrayUsingDescriptors:sort];
+    }
+    else{
+        self.recents = [[NSArray alloc] init ];
+    }
+    
 //    self.table = (UITableView*)self.view;
     
     [table reloadData];
@@ -47,10 +55,32 @@
 
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell* cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"recentCell"];
-    cell.imageView.image = [UIImage imageWithData:[FlickrFetcher imageDataForPhotoWithFlickrInfo:[recents objectAtIndex:indexPath.row] format:FlickrFetcherPhotoFormatThumbnail]];
+    UITableViewCell* cell = [table dequeueReusableCellWithIdentifier:@"recentCell"];
+    if(cell == nil){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"recentCell"];
+    }
+    NSDictionary* picInfo = (NSDictionary*)[recents objectAtIndex:indexPath.row];
+    NSString* label,*subtitle;
+    if([((NSString*)[picInfo valueForKey:FLICKR_PHOTO_TITLE]) length] > 0)
+    {
+        label =(NSString*)[picInfo valueForKey:FLICKR_PHOTO_TITLE];
+        subtitle =(NSString*)[picInfo valueForKey:FLICKR_PHOTO_OWNER];
+    }
+    else if([((NSString*)[picInfo valueForKey:FLICKR_PHOTO_DESCRIPTION ]) length] > 0)
+    {
+        label = (NSString*)[picInfo valueForKey:FLICKR_PHOTO_DESCRIPTION];
+        subtitle = (NSString*)[picInfo valueForKey:FLICKR_PHOTO_OWNER];
+    }
+    else {
+        label = @"Unknown";
+        subtitle = @"";
+    }
+
+    [cell.textLabel setText:label];
+    [cell.detailTextLabel setText:subtitle];
+    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[FlickrFetcher urlForPhoto:picInfo format:FlickrPhotoFormatThumbnail]]];
     return cell;
-    cell.textLabel.text = [[recents objectAtIndex:indexPath.row] valueForKey:@"title"];
+
 }
 -(int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -64,6 +94,7 @@
 {
     if ([segue.identifier isEqualToString:@"recentPicture"]) {
         [segue.destinationViewController setPlace:sender];
+        [[segue.destinationViewController navigationItem] setTitle:[sender valueForKey:FLICKR_PHOTO_TITLE]];
     }
 }
 @end

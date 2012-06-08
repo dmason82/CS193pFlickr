@@ -10,4 +10,5 @@
 
 @interface FirstViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,retain) NSArray* placesArray;
+@property(nonatomic,retain) IBOutlet UITableView * table;
 @end

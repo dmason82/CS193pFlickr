@@ -15,10 +15,14 @@
 
 @implementation FirstViewController
 @synthesize placesArray;
+@synthesize table;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.placesArray = [FlickrFetcher topPlaces];
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:FLICKR_PLACE_NAME ascending:YES];
+    NSArray* descriptors = [NSArray arrayWithObject:sortDescriptor];
+    self.placesArray = [[FlickrFetcher topPlaces] sortedArrayUsingDescriptors:descriptors];
+    [table reloadData];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -66,7 +70,7 @@
 {
     /**Sweet, sweet hackery. 
     */
-    [self performSegueWithIdentifier:@"viewPlace" sender: [[placesArray objectAtIndex:indexPath.row] valueForKey:@"place_id"]];
+    [self performSegueWithIdentifier:@"viewPlace" sender: [placesArray objectAtIndex:indexPath.row]];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -76,9 +80,11 @@
      */
     if([segue.identifier isEqual:@"viewPlace"])
     {
-        [((PlaceViewController*)segue.destinationViewController) setPlace:sender];
-        NSLog(@"%@",sender);
-        
+        [((PlaceViewController*)segue.destinationViewController) setPlace:[(NSDictionary*)sender copy]];
+        NSScanner* scan = [NSScanner scannerWithString:(NSString*)[sender valueForKey:FLICKR_PLACE_NAME]];
+        NSString* result;
+        [scan scanUpToString:@"," intoString:&result];
+        [[(PlaceViewController*)segue.destinationViewController navigationItem] setTitle:result];
     }
 }
 @end

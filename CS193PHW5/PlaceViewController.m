@@ -62,7 +62,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.pictures = [FlickrFetcher photosAtPlace:self.place];
+    self.pictures = [FlickrFetcher photosInPlace:self.place maxResults:50];
 }
 //- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
@@ -128,11 +128,11 @@
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell* cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"picCell"];
+    UITableViewCell* cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"picCell"];
     cell.textLabel.text = [[pictures objectAtIndex:indexPath.row] valueForKey:@"title"];
-    cell.imageView.image = [UIImage imageWithData:[FlickrFetcher imageDataForPhotoWithFlickrInfo:[pictures objectAtIndex:indexPath.row] format:FlickrFetcherPhotoFormatLarge]];
+    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[FlickrFetcher urlForPhoto:[pictures objectAtIndex:indexPath.row] format:FlickrPhotoFormatThumbnail]]];
     NSLog(@"%@",[[pictures objectAtIndex:indexPath.row] valueForKey:@"title"]);
-    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+//    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     return cell;
 }
 
@@ -143,6 +143,7 @@
     if([segue.identifier isEqualToString:@"viewPicture"])
     {
         [((PictureViewController*)segue.destinationViewController) setPlace:sender];
+        [[segue.destinationViewController navigationItem] setTitle:[sender valueForKey:FLICKR_PHOTO_TITLE]];
     }
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray* array = [[defaults arrayForKey:@"recents"] mutableCopy];
