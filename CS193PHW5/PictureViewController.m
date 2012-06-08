@@ -27,7 +27,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSLog(@"%@",self.place);
     [self.imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[FlickrFetcher urlForPhoto:self.place format:FlickrPhotoFormatLarge]]]];
     [imageView sizeToFit];
     [toScroll setContentSize:imageView.image.size];
