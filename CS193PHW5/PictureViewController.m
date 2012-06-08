@@ -15,6 +15,7 @@
 @implementation PictureViewController
 @synthesize  imageView;
 @synthesize place;
+@synthesize toScroll;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,6 +29,16 @@
     [super viewWillAppear:animated];
     NSLog(@"%@",self.place);
     [self.imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[FlickrFetcher urlForPhoto:self.place format:FlickrPhotoFormatLarge]]]];
+    [imageView sizeToFit];
+    [toScroll setContentSize:imageView.image.size];
+    [toScroll setDelegate:self];
+    [toScroll setMaximumZoomScale:1];
+    [toScroll setMinimumZoomScale:.025];
+    toScroll.clipsToBounds = YES;
+    [toScroll setScrollEnabled:YES];
+    [toScroll addSubview:imageView];
+    [toScroll setZoomScale:1];
+    
 }
 - (void)viewDidLoad
 {
@@ -44,6 +55,11 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(UIView*)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return imageView;
 }
 
 @end
